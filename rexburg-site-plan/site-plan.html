@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Team site plan for Rexburg Bounty Board: requirements, tavern branding, navigation, and responsive wireframes.">
+  <title>Rexburg Bounty Board | Site Plan</title>
+  <link rel="stylesheet" href="styles/site-plan.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to site plan</a>
+<header class="masthead">
+  <p class="eyebrow">The community ledger · Design edition 01</p>
+  <div class="brand-mark" aria-hidden="true">R<span>BB</span></div>
+  <h1>Rexburg Bounty Board</h1>
+  <p class="subtitle">A gathering place for good deeds.</p>
+  <div class="metadata"><span>Site plan &amp; interface guide</span><span>CSE 310 · Team working draft</span><span>28 September 2026</span></div>
+  <!-- TEAM: Add team member names and your section here. -->
+</header>
+<nav class="contents" aria-label="Site plan sections">
+  <a href="#overview">01 Overview</a><a href="#branding">02 Branding</a><a href="#style-guide">03 Style guide</a><a href="#site-map">04 Site map</a><a href="#flows">05 Workflows</a><a href="#wireframes">06 Wireframes</a><a href="#requirements">07 Requirements</a><a href="#handoff">08 Team handoff</a>
+</nav>
+<main id="main">
+  <aside class="note"><strong>What this document is:</strong> an editable HTML/CSS site plan, not the functioning application. It follows the supplied rafting example’s structure and the Rexburg Bounty Board SRS. <span class="tag">Required</span> denotes SRS behavior; <span class="tag proposal">Proposed</span> denotes a design recommendation; <span class="tag tbd">TBD</span> denotes an unresolved team decision. All people, rewards, and opportunities in wireframes are sample content.</aside>
+
+  <section id="overview">
+    <p class="section-number">01 / Overview</p><h2>Real neighbors. Meaningful quests.</h2>
+    <div class="two-column"><article><h3>Purpose</h3><p>Connect Rexburg residents who need a task completed with neighbors willing to help. Users create and verify accounts, post bounties, request claims, communicate, complete work, and earn points after poster approval.</p></article><article><h3>Audience</h3><p><strong>Bounty posters</strong> need a clear way to describe work, choose a hunter, and confirm results. <strong>Bounty hunters</strong> need understandable opportunities, request status, task details, and completion feedback. One account can serve both roles.</p></article></div>
+    <h3>Experience goals</h3><ul><li>Make it obvious who must act next and whether work is approved.</li><li>Keep materials, time, location, and contact rules easy to find.</li><li>Use the warmth of a tavern noticeboard without obscuring real service tasks.</li><li>Provide clear success, rejection, empty, loading, and error states.</li></ul>
+    <p class="note">Scope includes account verification, bounty creation and claiming, two approval stages, communication, notifications, optional ratings, and points. This plan does not claim those features are implemented.</p>
+  </section>
+
+  <section id="branding">
+    <p class="section-number">02 / Branding</p><h2>The tavern noticeboard</h2>
+    <p>Combine the Oak &amp; Ember noticeboard with Hearthside’s welcoming tone: parchment surfaces, walnut headings, burgundy seals, and restrained brass accents. The product name remains <strong>Rexburg Bounty Board</strong>.</p>
+    <div class="brand-sample"><div class="brand-mark" aria-hidden="true">R<span>BB</span></div><div><h3>Rexburg<br>Bounty Board</h3><p>Good deeds belong here.</p></div></div>
+    <p class="caption">Proposed wordmark and CSS monogram; no external image is required. Replace with a final team-approved logo later.</p>
+    <div class="two-column"><article><h3>Visual language</h3><ul><li>Pinned notices for available bounties.</li><li>Ledger rows for current and completed work.</li><li>Reward seals labeled “XP,” never implying cash.</li><li>Serif headings paired with highly readable body text.</li></ul></article><article><h3>Voice &amp; imagery</h3><p>Warm, neighborly, and direct. Use “Claim bounty,” “Awaiting approval,” and “Not Yet” for real actions. Reserve flavor for headings such as “A helping hand is worth a story.” Prefer community, tools, gardens, and lantern imagery over combat or alcohol motifs.</p></article></div>
+  </section>
+
+  <section id="style-guide">
+    <p class="section-number">03 / Style guide</p><h2>Parchment, ink &amp; a little brass</h2>
+    <h3>Color palette</h3><div class="palette">
+      <div><div class="swatch walnut"></div><strong>Walnut</strong><code>#35271F</code><small>Headings, navigation</small></div>
+      <div><div class="swatch parchment"></div><strong>Parchment</strong><code>#F4EAD5</code><small>Page background</small></div>
+      <div><div class="swatch paper"></div><strong>Notice paper</strong><code>#FFF9EC</code><small>Cards and forms</small></div>
+      <div><div class="swatch burgundy"></div><strong>Wax seal</strong><code>#783D36</code><small>Primary actions</small></div>
+      <div><div class="swatch brass"></div><strong>Brass</strong><code>#B58A49</code><small>Decoration, borders</small></div>
+      <div><div class="swatch forest"></div><strong>Forest</strong><code>#355544</code><small>Approved, completed</small></div>
+    </div><p>Use dark walnut text on parchment or paper. Use paper-colored text on burgundy or forest. Brass is decorative—not small body text. Every status also has a written label.</p>
+    <h3>Typography</h3><div class="two-column"><div class="specimen"><span class="eyebrow">Heading · Georgia / serif</span><h2>A small act.<br>A lasting difference.</h2><p>Georgia is available offline on many systems; a generic serif is the fallback. Keep decorative typography out of instructions and form labels.</p></div><div class="specimen"><span class="eyebrow">Body · system-ui / sans-serif</span><p>Help prepare the community garden for its next chapter. Bring work gloves and water; the poster will provide tools.</p><p class="colored">Your claim request was sent. Wait for the poster’s approval before beginning work.</p></div></div>
+    <h3>UI components</h3><div class="component-row"><span class="button">Claim bounty</span><span class="button secondary">View details</span><span class="status pending">Awaiting approval</span><span class="status approved">Approved</span><span class="status rejected">Not Yet</span></div><p class="caption">Static visual samples, not application controls.</p>
+    <div class="two-column"><div class="field-example"><label for="example-description">Task description <span>(example field)</span></label><textarea id="example-description" rows="3" placeholder="Describe the work and what success looks like."></textarea><small>Keep the task specific so a hunter knows what to expect. This field is not saved.</small></div><div><h4>Error copy</h4><p class="error-example">That username is already taken. Please choose another.</p><h4>Feedback copy</h4><p>“Your completion request is waiting for the poster.” “More work is needed. The bounty is still active.”</p></div></div>
+    <h3>Proposed product navigation</h3><nav class="product-nav" aria-label="Navigation examples linking to wireframes"><a href="#wf-board">Bounties</a><a href="#wf-people">People</a><a href="#wf-current">My work</a><a href="#screen-messages">Messages</a><a href="#screen-profile">Profile</a></nav><p class="caption">Preserves Bounties and People from earlier designs. People is a proposed community feature, not a separate required SRS screen. Notifications and “Post a bounty” remain prominent header actions.</p>
+  </section>
+
+  <section id="site-map">
+    <p class="section-number">04 / Site map</p><h2>A place for every step</h2>
+    <div class="map-root">Rexburg Bounty Board</div><div class="site-map">
+      <article><h3>Account</h3><ul><li>Sign up</li><li>Email verification</li><li>Sign in</li><li>User profile / sign out</li></ul></article>
+      <article><h3>Bounties</h3><ul><li>Bounty board</li><li>Bounty details</li><li>Claim confirmation</li><li>Create bounty</li></ul></article>
+      <article><h3>My work</h3><ul><li>Hunting / Posting views</li><li>Pending claims</li><li>Hunter profile / approval</li><li>Current bounty</li><li>Complete bounty / review</li><li>Rating / completed history</li></ul></article>
+      <article><h3>Connections</h3><ul><li>Messages</li><li>Notifications</li><li>People <em>(proposed)</em></li></ul></article>
+    </div><p>A user can hunt and post without creating separate accounts. Proposed “Hunting” and “Posting” segments organize My work; they are not separate authentication roles.</p>
+  </section>
+
+  <section id="flows">
+    <p class="section-number">05 / Workflows</p><h2>A claim is a request—not an assignment.</h2>
+    <ol class="journey"><li><strong>Browse</strong><span>Read task details</span></li><li><strong>Request</strong><span>Confirm claim</span></li><li><strong>Approve</strong><span>Poster selects hunter</span></li><li><strong>Work</strong><span>Contact &amp; coordinate</span></li><li><strong>Review</strong><span>Hunter requests completion</span></li><li><strong>Reward</strong><span>Poster confirms; points awarded</span></li></ol>
+    <div class="table-wrap"><table><caption>State transitions and feedback</caption><thead><tr><th>State</th><th>Action / actor</th><th>Result</th><th>Notification</th></tr></thead><tbody>
+      <tr><td>Available bounty</td><td>Hunter sends claim</td><td>Claim awaits approval; not yet assigned</td><td>Poster receives request</td></tr>
+      <tr><td>Pending claim</td><td>Poster accepts</td><td>Hunter assigned; bounty active; contact unlocked</td><td>Hunter accepted</td></tr>
+      <tr><td>Pending claim</td><td>Poster rejects</td><td>This claim rejected; no assignment for this hunter</td><td>Hunter rejected</td></tr>
+      <tr><td>Active bounty</td><td>Hunter selects Complete Bounty</td><td>Completion awaits poster review; no points yet</td><td>Poster review alert <em>(proposed)</em></td></tr>
+      <tr><td>Completion review</td><td>Poster selects Not Yet</td><td>Bounty remains active; hunter continues</td><td>Hunter informed completion was not approved</td></tr>
+      <tr><td>Completion review</td><td>Poster selects Complete</td><td>Bounty ends; points awarded; leaves Current Bounty</td><td>Hunter receives completion approval</td></tr>
+      <tr><td>Completed</td><td>Poster optionally rates hunter</td><td>Rating saved; exact scale TBD</td><td>No additional event required by SRS</td></tr>
+    </tbody></table></div>
+    <p class="note"><strong>Keep claim status and bounty status separate.</strong> Rejecting one hunter must not imply the whole bounty is completed or deleted. Multiple simultaneous requests, cancellation, and reassignment rules need a team decision.</p>
+  </section>
+
+  <section id="wireframes">
+    <p class="section-number">06 / Wireframes</p><h2>From the noticeboard to a deed well done</h2><p>These are CSS-built layout sketches, not screenshots. Edit their HTML directly. Buttons below are labeled static samples; the site-plan navigation links remain functional.</p>
+    <div class="wireframe-grid">
+      <figure id="wf-board"><figcaption><strong>01 · Bounty board</strong><span>Browse / SRS 5.2</span></figcaption><div class="phone"><div class="mini-header">RBB <span>Notifications · Profile</span></div><p class="eyebrow">The tavern noticeboard</p><h3>Your next good deed<br>is on the board.</h3><span class="button">+ Post a bounty</span><article class="quest"><div class="quest-top"><small>OUTDOORS</small><span class="reward">250 XP*</span></div><h4>A fresh start for the garden</h4><p>Community Garden, Rexburg<br>2 hours · Maya Chen</p><span class="text-action">View bounty →</span></article><article class="quest"><small>COMMUNITY</small><h4>Pack a little kindness</h4><p>Food pantry · 90 minutes</p></article><div class="mini-nav">Bounties · People · My work</div></div><p class="caption">Search and filters are optional future features. Reward numbers are illustrative, not an approved formula.</p></figure>
+      <figure id="wf-details"><figcaption><strong>02 · Details &amp; claim</strong><span>Read before requesting / SRS 5.3</span></figcaption><div class="phone"><div class="mini-header">← Bounties <span>Open</span></div><h3>A fresh start for the garden</h3><p>Posted by Maya Chen</p><div class="inset"><strong>2 hours · 250 XP*</strong><p>Community Garden, Rexburg</p></div><h4>The task</h4><p>Weed beds, spread compost, and tidy the paths.</p><h4>Materials</h4><p>Bring gloves and water. Tools provided.</p><p class="privacy">Contact details unlock after poster approval. Address-display policy TBD.</p><span class="button">Claim bounty</span><div class="inset"><strong>Confirm request</strong><p>The poster sees your name, profile photo, and score. Wait for approval before starting.</p><span class="text-action">Send request / Go back</span></div></div></figure>
+      <figure id="wf-approval"><figcaption><strong>03 · Hunter approval</strong><span>Poster view / SRS 6</span></figcaption><div class="phone"><div class="mini-header">← My posted bounties</div><span class="status pending">New claim request</span><h3>A neighbor offers a hand.</h3><p>For: Community garden cleanup</p><div class="profile-card"><div class="avatar" aria-label="Placeholder profile picture">BR</div><h4>Bridger</h4><p>Hunter · Rexburg</p><strong>1,850 score*</strong></div><p>Name, photo, and score are required. Ratings, completed count, and completion rate are proposed profile enhancements.</p><span class="button">Accept hunter</span><span class="button secondary">Reject request</span><p class="caption">A decision sends the hunter a notification.</p></div></figure>
+      <figure id="wf-current"><figcaption><strong>04 · Current bounty</strong><span>Hunter view / SRS 7–8</span></figcaption><div class="phone"><div class="mini-header">My work <span>Hunting / Posting</span></div><span class="status approved">Approved · In progress</span><h3>Community garden cleanup</h3><ol class="checklist"><li>Claim requested ✓</li><li>Poster approved ✓</li><li>Work in progress</li><li>Completion confirmation pending</li></ol><div class="inset"><h4>Contact Maya</h4><p>maya@example.com<br>Phone shown when provided</p><span class="text-action">Message poster →</span></div><span class="button">Complete bounty</span><p class="caption">This requests review; it does not immediately grant XP.</p><div class="inset">After sending: <strong>Awaiting completion approval</strong></div></div></figure>
+      <figure id="wf-completion"><figcaption><strong>05 · Completion &amp; rating</strong><span>Poster view / SRS 8–9</span></figcaption><div class="phone"><div class="mini-header">Review completion</div><h3>A deed well done?</h3><p>Bridger says the garden work is finished.</p><div class="inset"><strong>Original scope</strong><p>Weed beds, spread compost, and tidy paths.</p></div><span class="button">Complete · Award points</span><span class="button secondary">Not Yet · Keep active</span><p class="caption">Proposed: add a feedback field for what still needs attention.</p><hr><h4>After confirmation</h4><p>Bounty moves to history; hunter receives points.</p><div class="inset"><strong>Rate this hunter (optional)</strong><p>Rating control and scale TBD</p><span class="text-action">Submit rating / Skip</span></div></div></figure>
+      <figure id="wf-people"><figcaption><strong>06 · People &amp; profiles</strong><span>Community directory / Proposed</span></figcaption><div class="phone"><div class="mini-header">People <span>Your profile</span></div><h3>Good deeds.<br>Good company.</h3><div class="person"><span class="avatar">BR</span><div><strong>Bridger · You</strong><p>Hunter · 1,850 score*</p></div></div><div class="person"><span class="avatar">MC</span><div><strong>Maya Chen</strong><p>Community organizer</p></div></div><div class="person"><span class="avatar">ET</span><div><strong>Eli Thompson</strong><p>Neighbor &amp; volunteer</p></div></div><p class="privacy">Public profiles do not reveal private email or phone details.</p><div class="mini-nav">Bounties · People · My work</div></div><p class="caption">An open People directory is an extension. The hunter profile used for claim approval is required.</p></figure>
+    </div>
+    <h3>Desktop layout</h3><div class="desktop-wire"><div class="mini-header">Rexburg Bounty Board <span>Bounties · People · My work · Messages · Profile</span></div><div class="desktop-content"><aside><strong>My work</strong><p>Pending requests</p><p>Active bounties</p><p>Completed history</p></aside><div><h3>The bounty board</h3><div class="two-column"><div class="quest"><h4>Garden cleanup</h4><p>Time · Location · Reward</p></div><div class="quest"><h4>Food pantry</h4><p>Time · Location · Reward</p></div></div></div></div></div><p>Proposed responsiveness: one-column forms and cards on small screens; two or three board columns when space allows. Keep detail pages readable rather than stretching paragraphs across a wide monitor.</p>
+  </section>
+
+  <section id="requirements">
+    <p class="section-number">07 / Requirements coverage</p><h2>The complete screen inventory</h2>
+    <div class="table-wrap"><table><caption>Required presentation screens from SRS 12.1</caption><thead><tr><th>Screen</th><th>Content &amp; actions</th><th>States to design</th></tr></thead><tbody>
+      <tr><th>Sign Up</th><td>Email, unique username, password, optional phone; notification-permission explanation. Password: 8+ characters, 2+ numbers, 1+ special character.</td><td>Invalid input, username taken, submitting, account created.</td></tr>
+      <tr><th>Email Verification</th><td>Check-email guidance; proposed resend and change-email actions.</td><td>Waiting, verified, invalid/expired link, resend feedback.</td></tr>
+      <tr><th>Sign In</th><td>Email/password and sign-in action. Google and Apple remain TBD.</td><td>Invalid credentials, pending, success, network failure.</td></tr>
+      <tr><th>Bounty Board</th><td>Available bounties, details entry, create entry.</td><td>Loading, empty, available, failed load.</td></tr>
+      <tr><th>Create Bounty</th><td>Description, materials required/provided, estimated time, address, contact information. Title is a proposed summary field.</td><td>Missing/invalid inputs, preview (proposed), publishing, success, retry.</td></tr>
+      <tr><th>Bounty Details</th><td>Scope, materials, time, location, poster; Claim Bounty action.</td><td>Available, pending claim, assigned, no longer available; contact restricted until approval.</td></tr>
+      <tr><th>Hunter Profile</th><td>Name, profile picture, score; accept/reject actions in claim context.</td><td>Profile available/unavailable; pending or decided claim.</td></tr>
+      <tr><th>Claim Confirmation</th><td>Selected task, shared profile information, submit request.</td><td>Confirm, sending, awaiting approval, rejected, accepted.</td></tr>
+      <tr><th>Current Bounty</th><td>Task, assigned hunter/poster, contact, completion action. Views adapt to acting user.</td><td>Active, completion pending, returned by Not Yet, completed and removed.</td></tr>
+      <tr><th>Complete Bounty</th><td>Hunter requests review; poster chooses Complete or Not Yet.</td><td>Submitting, waiting, approved, not approved, retry.</td></tr>
+      <tr><th>Rating</th><td>Optional poster rating after completion; exact scale TBD.</td><td>Unrated, submitting, submitted, skipped.</td></tr>
+      <tr id="screen-messages"><th>Messages</th><td>Conversations, sender, message, timestamp, compose/send.</td><td>Empty, loading, sending, sent, failed/retry. Exact implementation TBD.</td></tr>
+      <tr><th>Notifications</th><td>Claim requests; accepted/rejected claims; approved/rejected completion; read/unread and related task link.</td><td>Empty, unread, read, permission allowed/denied. Proposed in-app fallback when push is unavailable.</td></tr>
+      <tr id="screen-profile"><th>User Profile</th><td>Own account information, profile picture, score/points, secure sign out.</td><td>Signed in/out; additional editing features TBD.</td></tr>
+    </tbody></table></div>
+    <h3>Architecture responsibilities</h3><div class="three-column"><article class="inset"><h4>Presentation</h4><p>HTML/CSS, screens, navigation, forms, accessible feedback, responsive layouts, and Figma designs.</p></article><article class="inset"><h4>Business</h4><p>Verification, claim eligibility, assignment, approvals, completion, point awards, communication permissions, and notification triggers.</p></article><article class="inset"><h4>Data</h4><p>Users, bounties, claims, ratings, messages, notifications, and persistent status changes. Secure password storage belongs to the authentication implementation—not HTML.</p></article></div>
+    <h3>Data the UI needs</h3><p>User ID, name/username, photo and score; bounty ID, poster, description, materials, time, address, status and assigned hunter; claim ID, hunter and status; ratings tied to bounty and users; messages with sender, receiver and timestamp; notifications with type, related event and read state. Never expose password information to public UI.</p>
+  </section>
+
+  <section id="handoff">
+    <p class="section-number">08 / Team handoff</p><h2>Build with the rules in view</h2>
+    <div class="two-column"><article><h3>Accessibility &amp; reliability</h3><ul><li>Use semantic headings, visible field labels, keyboard navigation, and clear focus styles.</li><li>Keep touch targets approximately 44 pixels or larger.</li><li>Associate errors with fields; preserve input when submission fails.</li><li>Use status text alongside color. Announce asynchronous outcomes accessibly.</li><li>Prevent duplicate submissions and enforce transitions on the server.</li><li>Protect contact data and persist important changes.</li></ul></article><article><h3>Test checklist</h3><ul><li>Account validation and email verification.</li><li>Claim → accept and claim → reject branches.</li><li>Completion → Complete and completion → Not Yet branches.</li><li>No early or duplicate points; completed work leaves Current Bounty.</li><li>Private contact visible only to authorized users.</li><li>Denied notification permission and failed message delivery.</li><li>Empty lists, bad input, slow responses, and retry states.</li><li>Presentation → business → data → business → presentation integration.</li><li>Keyboard, phone width, desktop width, and text zoom.</li></ul></article></div>
+    <h3>Decision register</h3><div class="table-wrap"><table><thead><tr><th>Decision</th><th>Current position</th><th>Owner</th></tr></thead><tbody><tr><td>Google / Apple sign-in</td><td>TBD; email/password in baseline</td><td>Team / business</td></tr><tr><td>Points and rating systems</td><td>TBD; XP values and scales are illustrative</td><td>Team / business</td></tr><tr><td>Push implementation</td><td>TBD; permission, device token, APNs or FCM, credentials required</td><td>Business / integration</td></tr><tr><td>Messaging implementation</td><td>Required capability; technology and pre-approval access TBD</td><td>Business / data</td></tr><tr><td>Address visibility</td><td>TBD; recommend approximate public location and restricted exact address</td><td>Team / privacy</td></tr><tr><td>People, filters, profile extras</td><td>Proposed; confirm priority</td><td>Presentation / team</td></tr><tr><td>Concurrent claims, cancellation, reassignment</td><td>Unspecified; define before implementation</td><td>Business / data</td></tr><tr><td>Performance target</td><td>SRS says reasonable/timely; agree measurable thresholds</td><td>Team / testing</td></tr></tbody></table></div>
+    <h3>Working with these files</h3><p>Edit this document in <code>site-plan.html</code>. Update the palette, fonts, spacing, and responsive layouts in <code>styles/site-plan.css</code>. Open the HTML file directly in a browser; no installation, build step, or internet connection is needed. Team names and section can be added in the header comment.</p>
+    <details><summary>Source notes and boundaries</summary><p>Requirements source: <cite>Rexburg_Bounty_Board_SRS_Outline.docx</cite>, supplied working draft, sections 1–17. Structural reference: <cite>wwr_project/wwr/site-plan-rafting.html</cite> and its CSS from the supplied ZIP. The reference’s repeated sections and invalid nested document structure were not carried forward. Tavern direction comes from the team’s design discussion. Proposed copy, branding, navigation grouping, and wireframes are design decisions, not additional confirmed SRS requirements.</p><p>The supplied SRS calls for Figma designs; this editable HTML/CSS plan is a reference for that work, not a delivered Figma file. No backend, account service, real messaging, or push notifications are included.</p></details>
+  </section>
+</main>
+<footer><p>Rexburg Bounty Board · A gathering place for good deeds.</p><a href="#main">Back to the plan ↑</a></footer>
+</body>
+</html>
