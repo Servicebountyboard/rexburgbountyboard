@@ -1,9 +1,6 @@
-import { Tabs, Redirect } from "expo-router";
-import { useTavern } from "@/features/tavern/store";
+import { Tabs } from "expo-router";
 import { C, Icon, IconName } from "@/features/tavern/ui";
 export default function TabsLayout() {
-  const { state, ready } = useTavern();
-  if (ready && !state.currentId) return <Redirect href="/account" />;
   return (
     <Tabs
       screenOptions={{

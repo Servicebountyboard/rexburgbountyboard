@@ -1,1 +1,1 @@
-export { MemberScreen as default } from "@/features/tavern/screens";
+export { MemberScreen as default } from "@/features/tavern/live-screens";

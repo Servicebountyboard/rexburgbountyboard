@@ -14,8 +14,8 @@ import {
 import Svg, { Path, Circle, Rect, Line } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Href } from "expo-router";
-import { useTavern } from "./store";
-import { Member, Task, profileStats } from "./model";
+import { useTavern } from "./live-store";
+import { Member, Task, profileStats } from "./live-model";
 export const C = {
   ink: "#35271F",
   parchment: "#F4EAD5",
@@ -226,6 +226,10 @@ export function Status({ status }: { status: string }) {
     completed: "Completed",
     rejected: "Request declined",
     accepted: "Approved",
+    draft: "Draft",
+    cancelled: "Cancelled",
+    closed: "Closed",
+    other: "Earlier claim state",
   };
   const good = ["completed", "active", "accepted"].includes(status);
   return (
@@ -288,7 +292,7 @@ export function Page({
   title,
   back = false,
 }: React.PropsWithChildren<{ title?: string; back?: boolean }>) {
-  const { ready, state, storageError, retrySave, act } = useTavern();
+  const { ready, state, clearError } = useTavern();
   const unread = state.notices.filter(
     (n) => n.recipient === state.currentId && !n.read,
   ).length;
@@ -333,18 +337,12 @@ export function Page({
           <ActivityIndicator color={C.wax} size="large" />
         ) : (
           <>
-            {storageError && (
-              <View style={s.alert}>
-                <Body>{storageError}</Body>
-                <Button title="Retry saving" secondary onPress={retrySave} />
-              </View>
-            )}
             {state.error && (
               <View accessibilityRole="alert" style={s.alert}>
                 <Text style={s.errorText}>{state.error}</Text>
                 <Pressable
                   accessibilityRole="button"
-                  onPress={() => act({ type: "clearError" })}
+                  onPress={clearError}
                 >
                   <Text style={s.link}>Dismiss</Text>
                 </Pressable>
@@ -373,7 +371,7 @@ export function BountyCard({
   compact?: boolean;
 }) {
   const { state } = useTavern();
-  const p = state.people.find((p) => p.id === b.publisher)!;
+  const p = state.people.find((p) => p.id === b.publisher);
   return (
     <Pressable
       accessibilityRole="button"
@@ -383,7 +381,7 @@ export function BountyCard({
     >
       <View style={s.pin} />
       <View style={s.rowBetween}>
-        <Label>{b.category} / REXBURG</Label>
+        <Label>REXBURG BOUNTY</Label>
         <Reward xp={b.xp} small />
       </View>
       <Text style={[s.cardTitle, compact && { fontSize: 22 }]}>{b.title}</Text>
@@ -396,7 +394,7 @@ export function BountyCard({
         <Text style={s.small}>{b.duration}</Text>
       </View>
       <View style={s.cardFooter}>
-        <Text style={s.small}>Posted by {p.name.split(" ")[0]}</Text>
+        <Text style={s.small}>Posted by {p?.name || "Neighbor"}</Text>
         {b.status === "open" ? (
           <Icon name="arrow" color={C.wax} />
         ) : (
@@ -414,18 +412,13 @@ export function ProfileOverview({ person }: { person: Member }) {
       <View style={s.profileHero}>
         <Avatar person={person} large />
         <Title>{person.name}</Title>
-        <Body>{person.role} · Rexburg, Idaho</Body>
-        <Status
-          status={
-            person.verified ? "Demo member · Verified" : "Verification pending"
-          }
-        />
+        <Body>Rexburg, Idaho</Body>
       </View>
       <View style={s.stats}>
         {[
           [stats.xp.toLocaleString(), "SCORE / XP"],
-          [String(stats.completed), "COMPLETED"],
-          [stats.completed ? stats.rating : "New", "RATING"],
+          [person.id === state.currentId ? String(stats.completed) : "—", "COMPLETED"],
+          [stats.rating === "0.0" ? "New" : stats.rating, "RATING"],
         ].map(([value, label]) => (
           <View key={label} style={s.stat}>
             <Text style={s.statNumber}>{value}</Text>
@@ -435,15 +428,7 @@ export function ProfileOverview({ person }: { person: Member }) {
       </View>
       <Label>THE PERSON BEHIND THE GOOD</Label>
       <Body>{person.bio}</Body>
-      <View style={s.wrap}>
-        {person.skills.map((skill) => (
-          <Status key={skill} status={skill} />
-        ))}
-      </View>
-      <Text style={s.caption}>
-        Sample profile • Historical completion rate: {person.rate}%{"\n"}XP and
-        rating rules are illustrative until the team finalizes them.
-      </Text>
+      <Text style={s.caption}>Points and ratings come from completed bounties.</Text>
     </>
   );
 }

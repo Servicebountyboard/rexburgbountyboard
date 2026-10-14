@@ -1,1 +1,1 @@
-export { ConversationScreen as default } from "@/features/tavern/screens";
+export { ConversationScreen as default } from "@/features/tavern/live-screens";

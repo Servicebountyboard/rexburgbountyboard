@@ -1,1 +1,1 @@
-export { ProfileScreen as default } from "@/features/tavern/tabs";
+export { ProfileScreen as default } from "@/features/tavern/live-tabs";

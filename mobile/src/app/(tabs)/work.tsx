@@ -1,1 +1,1 @@
-export { WorkScreen as default } from "@/features/tavern/tabs";
+export { WorkScreen as default } from "@/features/tavern/live-tabs";
