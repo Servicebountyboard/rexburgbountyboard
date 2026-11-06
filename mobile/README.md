@@ -1,20 +1,33 @@
-# Rexburg Bounty Board
+# Mobile application
 
-An Expo SDK 57 prototype backed by Supabase Auth and the existing tables in `../SUPABASE_SCHEMA.md`.
+The client is an Expo SDK 57 application using Expo Router and Supabase.
 
-## Run
+## Setup
 
-1. Run `npm install` in this directory.
-2. Copy `.env.example` to `.env` and set your project's URL and publishable key. Never use a service-role key in the app.
-3. Complete [Supabase setup](SUPABASE_SETUP.md) before signing up.
-4. On this Windows workspace, run `npx.cmd expo start --web --clear` for the quickest browser check. For native testing, run `npx.cmd expo start --clear` and open a development build.
+From this directory:
 
-Use `npm run typecheck` and `npm run lint` for local checks.
+```powershell
+Copy-Item .env.example .env
+npm.cmd install
+npm.cmd start
+```
 
-## Current scope
+Configure `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_KEY` in `.env`.
+Only use the project's publishable key; privileged Supabase credentials must
+never be bundled into the client.
 
-Email/password signup, email confirmation, sign-in, password reset, bounty posting, claims, poster decisions, completion review, private messages, ratings, points, and in-app notifications are wired to Supabase. Actions require the companion SQL migration. No fictional seed data or demo account switching is loaded.
+Complete the [Supabase setup guide](../docs/development/supabase.md) before
+testing authentication or service workflows.
 
-The current schema has no category, schedule, profile photo, or device push token. The app shows a general Rexburg location and uses `bounties.address` for meeting details restricted to the poster and accepted hunter. New bounties award 200 XP under the SQL rules.
+## Commands
 
-Data refreshes after local actions and when the user taps Refresh. Remote changes require a manual refresh. The board currently fetches at most 200 bounties, the inbox 500 messages, and 100 notifications; add pagination for larger use.
+- `npm.cmd start` starts Expo.
+- `npm.cmd run android`, `ios`, or `web` starts a platform target.
+- `npm.cmd run typecheck` checks TypeScript.
+- `npm.cmd run lint` checks source quality.
+
+## Current limitations
+
+The prototype manually refreshes remote changes and uses fixed query limits. It
+does not yet provide pagination, push notifications, structured scheduling,
+categories, profile photos, or production monitoring.
