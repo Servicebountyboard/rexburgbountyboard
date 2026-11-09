@@ -1,26 +1,27 @@
-import { AppState, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import "react-native-url-polyfill/auto";
 import { createClient } from "@supabase/supabase-js";
+import { Platform } from "react-native";
+import "react-native-url-polyfill/auto";
 
-const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const key = process.env.EXPO_PUBLIC_SUPABASE_KEY;
+/**
+ * Creates an untyped Supabase client when database work resumes.
+ * Nothing in the application currently imports or calls this function.
+ */
+export function createSupabaseClient() {
+  const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
+  const key = process.env.EXPO_PUBLIC_SUPABASE_KEY;
 
-export const supabase = url && key
-  ? createClient(url, key, {
-      auth: {
-        ...(Platform.OS === "web" ? {} : { storage: AsyncStorage }),
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: false,
-        flowType: "pkce",
-      },
-    })
-  : null;
+  if (!url || !key) {
+    throw new Error("Supabase environment variables are not configured.");
+  }
 
-if (supabase && Platform.OS !== "web") {
-  AppState.addEventListener("change", (state) => {
-    if (state === "active") supabase.auth.startAutoRefresh();
-    else supabase.auth.stopAutoRefresh();
+  return createClient(url, key, {
+    auth: {
+      ...(Platform.OS === "web" ? {} : { storage: AsyncStorage }),
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+      flowType: "pkce",
+    },
   });
 }

@@ -1,23 +1,15 @@
 # Mobile application
 
-The client is an Expo SDK 57 application using Expo Router and Supabase.
+The client is an Expo SDK 57 application using Expo Router.
 
 ## Setup
 
 From this directory:
 
 ```powershell
-Copy-Item .env.example .env
 npm.cmd install
 npm.cmd start
 ```
-
-Configure `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_KEY` in `.env`.
-Only use the project's publishable key; privileged Supabase credentials must
-never be bundled into the client.
-
-Complete the [Supabase setup guide](../docs/development/supabase.md) before
-testing authentication or service workflows.
 
 ## Commands
 
@@ -26,8 +18,9 @@ testing authentication or service workflows.
 - `npm.cmd run typecheck` checks TypeScript.
 - `npm.cmd run lint` checks source quality.
 
-## Current limitations
+## Database status
 
-The prototype manually refreshes remote changes and uses fixed query limits. It
-does not yet provide pagination, push notifications, structured scheduling,
-categories, profile photos, or production monitoring.
+All authentication, persistence, queries, and remote mutations are intentionally
+disconnected while the application is cleaned up. `src/lib/supabase.ts` is a
+dormant client factory and `.env.example` documents the two public values needed
+to reconnect later. The running application does not import the client.
