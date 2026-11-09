@@ -14,7 +14,11 @@ npm.cmd start
 ## Commands
 
 - `npm.cmd start` starts Expo.
+- `npm.cmd run start:clear` starts Expo with a clean Metro cache.
 - `npm.cmd run android`, `ios`, or `web` starts a platform target.
+- `npm.cmd run export:web` verifies the production web bundle.
+- `npm.cmd run check:expo` checks SDK dependency compatibility.
+- `npm.cmd run doctor` runs the complete Expo project diagnostic.
 - `npm.cmd run typecheck` checks TypeScript.
 - `npm.cmd run lint` checks source quality.
 
