@@ -1,0 +1,28 @@
+# Operating systems and editors
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Logs and local output
+*.log
+coverage/
+dist/
+tmp/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Node and Expo
+node_modules/
+.expo/
+web-build/
+*.tsbuildinfo
+
+# Generated native projects
+ios/
+android/

@@ -1,41 +1,36 @@
 # Rexburg Bounty Board
 
-This is a service bounty board for the city of Rexburg, Idaho! Do some great service, gain experience, and level up to climb through the ranks!
+Rexburg Bounty Board is an Expo/React Native application for coordinating
+one-on-one acts of service in Rexburg, Idaho.
 
-## Instructions for Build and Use
+## Repository structure
 
-Steps to build and/or run the software:
+```text
+mobile/                Expo application
+```
 
-1. First step here
-2.
-3.
+## Local development
 
-Instructions for using the software:
+Prerequisites: Node.js and npm.
 
-1. First step here
-2.
-3.
+```powershell
+cd mobile
+npm.cmd install
+npm.cmd start
+```
 
-## Development Environment
+## Quality checks
 
-To recreate the development environment, you need the following software and/or libraries with the specified versions:
+Run these from `mobile/` before opening a pull request:
 
-* First thing here
-*
-*
+```powershell
+npm.cmd run typecheck
+npm.cmd run lint
+```
 
-## Useful Websites to Learn More
+## Project status
 
-I found these websites useful in developing this software:
-
-* [Website Title](Link)
-*
-*
-
-## Future Work
-
-The following items I plan to fix, improve, and/or add to this project in the future:
-
-* [ ] First thing here
-* [ ]
-* [ ]
+This repository is undergoing a production-readiness rebuild. Authentication,
+persistence, and database-backed workflows are intentionally disconnected. A
+dormant client factory and environment template remain under `mobile/` for the
+future data layer; the running app does not import or initialize them.
