@@ -11,6 +11,18 @@ npm.cmd install
 npm.cmd start
 ```
 
+Before starting Expo, create `mobile/.env.local` with the project's Supabase
+Project URL and publishable key:
+
+```dotenv
+EXPO_PUBLIC_SUPABASE_URL=
+EXPO_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+Get these values from the Supabase dashboard under **Project Settings → API**.
+Use the publishable key (or legacy anon key), never a service-role key. The
+local `.env.local` file is ignored by Git. Restart Expo after changing it.
+
 ## Commands
 
 - `npm.cmd start` starts Expo.
