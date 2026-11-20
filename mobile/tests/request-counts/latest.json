@@ -3,42 +3,23 @@
     {
       "id": "send-message",
       "action": "Send a message",
-      "requests": 11,
-      "reads": 10,
-      "fixtureBytes": 869,
+      "requests": 2,
+      "reads": 1,
+      "fixtureBytes": 229,
       "byEndpoint": {
         "send_bounty_message": 1,
-        "profiles": 1,
-        "bounties": 1,
-        "bounty_status": 1,
-        "bounty_claims": 1,
-        "bounty_claim_status": 1,
-        "notifications": 1,
-        "bounty_messages": 1,
-        "user_ratings": 1,
-        "reward_transactions": 1,
-        "bounty_submissions": 1
+        "bounty_messages": 1
       },
       "behavior": "PASS"
     },
     {
       "id": "open-notification",
       "action": "Open a notification (mark-read handler)",
-      "requests": 11,
-      "reads": 10,
-      "fixtureBytes": 757,
+      "requests": 1,
+      "reads": 0,
+      "fixtureBytes": 4,
       "byEndpoint": {
-        "mark_notification_read": 1,
-        "profiles": 1,
-        "bounties": 1,
-        "bounty_status": 1,
-        "bounty_claims": 1,
-        "bounty_claim_status": 1,
-        "notifications": 1,
-        "bounty_messages": 1,
-        "user_ratings": 1,
-        "reward_transactions": 1,
-        "bounty_submissions": 1
+        "mark_notification_read": 1
       },
       "behavior": "PASS"
     },

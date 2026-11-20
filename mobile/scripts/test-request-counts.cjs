@@ -39,14 +39,17 @@ async function harness() {
     },
     from(table) {
       assert.ok(Object.hasOwn(db, table), `Unknown fixture table: ${table}`);
-      let columns, ordering, limit;
+      let columns, limit;
+      const ordering = [], filters = [];
       const query = {
         select(value) { columns = value; return query; },
-        order(column, options) { ordering = [column, options]; return query; },
+        eq(column, value) { filters.push([column, value]); return query; },
+        order(column, options) { ordering.push([column, options]); return query; },
         limit(value) { limit = value; return query; },
         then(resolve, reject) {
           let rows = clone(db[table]);
-          if (ordering) { const [key, opts] = ordering; rows.sort((a,b) => (a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0) * (opts.ascending ? 1 : -1)); }
+          rows = rows.filter(row => filters.every(([key, value]) => row[key] === value));
+          rows.sort((a,b) => { for (const [key, opts] of ordering) { const diff = (a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0) * (opts.ascending ? 1 : -1); if (diff) return diff; } return 0; });
           if (limit !== undefined) rows = rows.slice(0, limit);
           if (columns !== '*') rows = rows.map(row => Object.fromEntries(columns.split(',').map(key => [key, row[key]])));
           const error = failRead && table === 'bounty_messages' ? { message: 'Read failed' } : null;
@@ -60,7 +63,7 @@ async function harness() {
       if (failRpc) return record('rpc', name, null, { message: 'RPC failed' }, args);
       if (name === 'send_bounty_message') {
         assert.equal(args.p_bounty_id, 1);
-        db.bounty_messages.push({ message_id: 2, bounty_id: 1, sender_id: 'hunter', message_text: args.p_text, created_at: stamp });
+        db.bounty_messages.push({ message_id: Math.max(...db.bounty_messages.map(m => m.message_id)) + 1, bounty_id: 1, sender_id: 'hunter', message_text: args.p_text, created_at: stamp });
       } else {
         assert.equal(args.p_notification_id, 1);
         db.notifications[0].is_read = true;
@@ -158,6 +161,30 @@ async function main() {
     if (scenario.id !== 'refresh-messages') assert.equal(h.calls.length, 1);
   }
   // Already-read notification clicks are measured separately, not hidden.
+  // Large conversation: the latest page is scoped, capped, ordered and merged.
+  const large = await harness();
+  for (let id = 2; id <= 70; id++) large.db.bounty_messages.push({ message_id: id, bounty_id: 1, sender_id: 'poster', message_text: `Message ${id}`, created_at: stamp });
+  large.db.bounty_messages.push({ message_id: 71, bounty_id: 2, sender_id: 'poster', message_text: 'Other conversation', created_at: stamp });
+  await large.render().refresh(); // Preload history and another conversation.
+  large.calls.length = 0;
+  assert.equal(await large.render().act({ type: 'message', bountyId: '1', text: 'Newest' }), true);
+  assert.equal(large.calls.length, 2);
+  assert.equal(large.calls[1].rows, 50);
+  assert.equal(large.render().state.messages.length, 72);
+  assert.equal(large.render().state.messages.at(-1).text, 'Newest');
+  assert.equal(large.render().state.messages.filter(m => m.text === 'Other conversation').length, 1);
+  assert.equal(large.render().state.messages.filter(m => m.id === '1').length, 1);
+  // An unknown message from another conversation must not leak into this refresh.
+  large.db.bounty_messages.push({ message_id: 73, bounty_id: 2, sender_id: 'poster', message_text: 'Not fetched', created_at: stamp });
+  await large.render().act({ type: 'message', bountyId: '1', text: 'Another' });
+  assert.equal(large.render().state.messages.some(m => m.text === 'Not fetched'), false);
+  const saved = await harness();
+  saved.failRead();
+  assert.equal(await saved.render().act({ type: 'message', bountyId: '1', text: 'Saved once' }), true);
+  assert.equal(saved.db.bounty_messages.filter(m => m.message_text === 'Saved once').length, 1);
+  assert.match(saved.render().state.error, /was sent/);
+  assert.equal(saved.render().busy, false);
+  assert.equal(saved.render().state.messages.length, 1);
   const read = await harness();
   read.db.notifications[0].is_read = true;
   await read.render().refresh(); read.calls.length = 0;
@@ -177,7 +204,7 @@ async function main() {
   const report = '# Offline request-count comparison\n\n'
     + 'Actual store functions with mocked Supabase responses. Startup excluded. Payload bytes are JSON fixture data only, not billed egress. Notification navigation/address lookup, React lifecycle, RLS and server SQL are not tested.\n\n'
     + '| Action | Baseline requests | Current requests | Reduction | Fixture response bytes | Store behavior |\n|---|---:|---:|---:|---:|---|\n' + rows.join('\n')
-    + `\n\nThree success checks, three failure checks, and an already-read notification check passed. Already-read click: ${read.calls.length} requests.\n\n`
+    + `\n\nThree success checks, three failure checks, an already-read notification check, large-conversation filtering/merge checks, and a saved-message/read-failure check passed. Already-read click: ${read.calls.length} requests.\n\n`
     + '## Requests by endpoint\n\n| Endpoint | Send message | Open notification | Refresh messages |\n|---|---:|---:|---:|\n'
     + [...new Set(results.flatMap(row => Object.keys(row.byEndpoint)))].sort().map(name => `| ${name} | ${results.map(row => row.byEndpoint[name] || 0).join(' | ')} |`).join('\n') + '\n';
   fs.writeFileSync(path.join(reportDir, 'latest.json'), JSON.stringify({ results, requestRegression: regression }, null, 2) + '\n');

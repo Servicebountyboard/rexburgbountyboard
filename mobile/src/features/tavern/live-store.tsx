@@ -172,6 +172,32 @@ export function TavernProvider({ children }: React.PropsWithChildren) {
       })();
       const { error } = await request;
       if (error) throw error;
+      if (action.type === "read") {
+        setState((old) => ({ ...old, notices: old.notices.map((notice) =>
+          notice.id === action.id ? { ...notice, read: true } : notice) }));
+        return true;
+      }
+      if (action.type === "message") {
+        // The RPC returns void. Fetch only this conversation after a successful send.
+        // A failed read must not report the already-saved message as a failed send.
+        try {
+          const rows = getRows(await supabase.from("bounty_messages")
+            .select("message_id,bounty_id,sender_id,message_text,created_at")
+            .eq("bounty_id", intId(action.bountyId))
+            .order("created_at", { ascending: false })
+            .order("message_id", { ascending: false }).limit(50));
+          const incoming = rows.map((row) => ({ id: String(row.message_id), bountyId: String(row.bounty_id), sender: row.sender_id, text: row.message_text, time: row.created_at }));
+          setState((old) => {
+            const messages = new Map(old.messages.map((message) => [message.id, message]));
+            incoming.forEach((message) => messages.set(message.id, message));
+            return { ...old, messages: [...messages.values()].sort((a, b) =>
+              a.time.localeCompare(b.time) || Number(a.id) - Number(b.id)) };
+          });
+        } catch {
+          setState((old) => ({ ...old, error: "Your message was sent, but messages could not refresh. Refresh the conversation; do not resend." }));
+        }
+        return true;
+      }
       return await load(session.user.id);
     } catch (error) {
       setState((old) => ({ ...old, error: error instanceof Error ? error.message : "That request failed." }));
