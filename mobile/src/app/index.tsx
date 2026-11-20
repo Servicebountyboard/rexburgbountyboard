@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AppButton, BrandMark, Surface } from "../components/ui";
+import { BrandMark, Surface } from "../components/ui";
+import { AuthenticatedApp } from "../components/AuthenticatedApp";
 import { useAuth } from "../features/auth/AuthProvider";
 import { getOwnProfile, type OwnProfile } from "../features/profile/profileRepository";
 import { palettes } from "../theme";
 
 export default function HomeScreen() {
-  const { session, loading, error, signIn, signUp, signOut } = useAuth();
+  const { session, loading, error, signIn, signUp } = useAuth();
   const insets = useSafeAreaInsets();
   const colors = palettes.dark;
   const [creatingAccount, setCreatingAccount] = useState(false);
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -45,14 +47,14 @@ export default function HomeScreen() {
   const submit = async () => {
     setLocalError(null);
     setNotice(null);
-    if (!email.trim() || !password) {
-      setLocalError("Enter your email and password.");
+    if (!email.trim() || !password || (creatingAccount && !username.trim())) {
+      setLocalError(creatingAccount ? "Enter a username, email, and password." : "Enter your email and password.");
       return;
     }
     setBusy(true);
     try {
       if (creatingAccount) {
-        await signUp(email.trim(), password);
+        await signUp(email.trim(), password, username.trim());
         setNotice("Account request sent. If email confirmation is enabled, check your inbox to finish signing in.");
       } else {
         await signIn(email.trim(), password);
@@ -64,58 +66,23 @@ export default function HomeScreen() {
     }
   };
 
-  const logout = async () => {
-    setLocalError(null);
-    setBusy(true);
-    try {
-      await signOut();
-    } catch {
-      setLocalError("Sign out failed. Check your connection and try again.");
-    } finally {
-      setBusy(false);
-    }
-  };
-
   return <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-    {loading ? <View style={styles.center}><ActivityIndicator color={colors.accent} /><Text style={{ color: colors.muted, marginTop: 12 }}>Restoring your session…</Text></View> : session ? <ScrollView contentContainerStyle={styles.content}>
-      <BrandMark colors={colors} />
-      <Text style={[styles.title, { color: colors.text }]}>You’re signed in</Text>
-      <Text style={[styles.subtitle, { color: colors.muted }]}>{session.user.email ?? "Authenticated account"}</Text>
-      <Surface colors={colors} style={styles.card}>
-        <Text style={[styles.cardTitle, { color: colors.text }]}>Account session active</Text>
-        <Text style={{ color: colors.muted, lineHeight: 21, marginTop: 8 }}>
-          This profile is read from Supabase using your authenticated account. No preview records are shown here.
-        </Text>
-        {profileLoading ? <Text style={{ color: colors.muted, marginTop: 12 }}>Loading your profile…</Text> : null}
-        {profileError ? <View style={{ gap: 10, marginTop: 12 }}>
-          <Text accessibilityRole="alert" style={styles.error}>{profileError}</Text>
-          <AppButton colors={colors} label="Retry profile" secondary onPress={() => setProfileRefresh((value) => value + 1)} />
-        </View> : null}
-        {!profileLoading && !profileError && !profile ? <Text style={{ color: colors.muted, lineHeight: 21, marginTop: 12 }}>
-          Your account is authenticated, but no profile row was found. Contact the project administrator to check profile creation; the app will not create one without an approved backend flow.
-        </Text> : null}
-        {profile ? <View style={[styles.profileData, { borderColor: colors.line }]}>
-          <Text style={[styles.username, { color: colors.text }]}>{profile.username}</Text>
-          <View style={styles.statRow}>
-            <Text style={{ color: colors.muted }}>Experience</Text><Text style={{ color: colors.text, fontWeight: "700" }}>{profile.totalPoints} XP</Text>
-          </View>
-          <View style={styles.statRow}>
-            <Text style={{ color: colors.muted }}>Gold</Text><Text style={{ color: colors.text, fontWeight: "700" }}>{profile.totalGold}</Text>
-          </View>
-          <View style={styles.statRow}>
-            <Text style={{ color: colors.muted }}>Average rating</Text><Text style={{ color: colors.text, fontWeight: "700" }}>{profile.averageRating > 0 ? `${profile.averageRating.toFixed(1)} / 5` : "Not rated yet"}</Text>
-          </View>
-        </View> : null}
-        <AppButton colors={colors} label={busy ? "Signing out…" : "Sign out"} secondary onPress={logout} />
-        {localError ? <Text accessibilityRole="alert" style={styles.error}>{localError}</Text> : null}
-      </Surface>
-    </ScrollView> : <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+    {loading ? <View style={styles.center}><ActivityIndicator color={colors.accent} /><Text style={{ color: colors.muted, marginTop: 12 }}>Restoring your session…</Text></View> : session ? <AuthenticatedApp
+      profile={profile}
+      profileLoading={profileLoading}
+      profileError={profileError}
+      onRetryProfile={() => setProfileRefresh((value) => value + 1)}
+    /> : <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <BrandMark colors={colors} />
         <Text style={[styles.title, { color: colors.text }]}>Rexburg Bounty Board</Text>
         <Text style={[styles.subtitle, { color: colors.muted }]}>{creatingAccount ? "Create your account" : "Sign in to continue"}</Text>
         {error ? <Surface colors={colors} style={styles.errorCard}><Text accessibilityRole="alert" style={styles.error}>{error}</Text></Surface> : null}
         <Surface colors={colors} style={styles.card}>
+          {creatingAccount ? <>
+            <Text style={[styles.label, { color: colors.text }]}>Username</Text>
+            <TextInput accessibilityLabel="Username" autoCapitalize="none" autoComplete="username" value={username} onChangeText={setUsername} placeholder="Choose a username" placeholderTextColor={colors.muted} style={[styles.input, { color: colors.text, borderColor: colors.line, backgroundColor: colors.surfaceAlt }]} />
+          </> : null}
           <Text style={[styles.label, { color: colors.text }]}>Email</Text>
           <TextInput accessibilityLabel="Email" autoCapitalize="none" autoComplete="email" keyboardType="email-address" value={email} onChangeText={setEmail} placeholder="you@example.com" placeholderTextColor={colors.muted} style={[styles.input, { color: colors.text, borderColor: colors.line, backgroundColor: colors.surfaceAlt }]} />
           <Text style={[styles.label, { color: colors.text }]}>Password</Text>
@@ -139,7 +106,6 @@ const styles = StyleSheet.create({
   content: { flexGrow: 1, width: "100%", maxWidth: 520, alignSelf: "center", justifyContent: "center", padding: 22, gap: 13 },
   title: { fontSize: 26, fontWeight: "800", textAlign: "center" }, subtitle: { fontSize: 15, textAlign: "center", marginBottom: 8 },
   card: { gap: 11, padding: 18 }, cardTitle: { fontSize: 18, fontWeight: "800" }, label: { fontSize: 13, fontWeight: "700", marginTop: 4 },
-  profileData: { borderTopWidth: 1, marginTop: 14, paddingTop: 12, gap: 10 }, username: { fontSize: 18, fontWeight: "800", marginBottom: 2 }, statRow: { flexDirection: "row", justifyContent: "space-between" },
   input: { minHeight: 48, borderWidth: 1, borderRadius: 12, paddingHorizontal: 13, fontSize: 15 },
   submit: { minHeight: 48, borderWidth: 1, borderRadius: 13, alignItems: "center", justifyContent: "center", marginTop: 5 },
   modeToggle: { minHeight: 44, alignItems: "center", justifyContent: "center" }, errorCard: { borderColor: "#A7443C" }, error: { color: "#E07B70", lineHeight: 20 },

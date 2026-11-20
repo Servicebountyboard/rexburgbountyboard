@@ -7,7 +7,7 @@ type AuthContextValue = {
   loading: boolean;
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, username: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -62,10 +62,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
         throw authError;
       }
     },
-    async signUp(email, password) {
+    async signUp(email, password, username) {
       if (!supabase) throw new Error(supabaseConfigurationError ?? "Supabase is not configured.");
       setError(null);
-      const { error: authError } = await supabase.auth.signUp({ email, password });
+      const { error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { username } },
+      });
       if (authError) {
         setError(authError.message);
         throw authError;

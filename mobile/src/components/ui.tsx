@@ -25,8 +25,8 @@ export function Surface({ colors, children, style }: PropsWithChildren<{ colors:
   return <View style={[styles.surface, { backgroundColor: colors.surface, borderColor: colors.line, shadowColor: colors.shadow }, style]}>{children}</View>;
 }
 
-export function AppButton({ colors, label, onPress, secondary = false }: { colors: AppColors; label: string; onPress: () => void; secondary?: boolean }) {
-  return <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.button, { backgroundColor: secondary ? colors.surfaceAlt : colors.accentSoft, borderColor: colors.accent, opacity: pressed ? 0.75 : 1 }]}>
+export function AppButton({ colors, label, onPress, secondary = false, disabled = false }: { colors: AppColors; label: string; onPress: () => void; secondary?: boolean; disabled?: boolean }) {
+  return <Pressable accessibilityRole="button" disabled={disabled} onPress={onPress} style={({ pressed }) => [styles.button, { backgroundColor: secondary ? colors.surfaceAlt : colors.accentSoft, borderColor: colors.accent, opacity: disabled ? 0.5 : pressed ? 0.75 : 1 }]}>
     <Text style={{ color: colors.text, fontWeight: "700" }}>{label}</Text>
   </Pressable>;
 }
